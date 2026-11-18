@@ -9,9 +9,11 @@
     h1 { margin: 0 0 .5rem; font-size: 1.4rem; }
     h2 { margin: 2.5rem 0 1rem; font-size: 1rem; }
     a { color: #2451a6; text-underline-offset: .15em; }
-    a:focus-visible { outline: 2px solid; outline-offset: 3px; }
+    a:focus-visible, button:focus-visible { outline: 2px solid; outline-offset: 3px; }
     dt { margin-top: 1.25rem; }
     dd { margin: .15rem 0 0; color: #555; }
+    .project-media { display: block; max-width: 100%; height: auto; margin-top: .75rem; }
+    .demo-toggle { padding: 0; border: 0; background: none; color: #555; font: inherit; font-size: .8rem; text-decoration: underline; text-underline-offset: .15em; cursor: pointer; }
   </style>
 </head>
 <body>
@@ -20,15 +22,39 @@
     <a href="https://github.com/danielsuhcompsci">GitHub</a>
   </header>
   <main>
-    <h2>Projects</h2>
+    <h2>Some Projects</h2>
     <dl>
+      <dt><a href="https://github.com/danielsuhcompsci/skatelens">SkateLens</a></dt>
+      <dd>Video replay, pose tracking, and skateboard trick inference on Apple silicon.
+        <img id="skatelens-demo" class="project-media" src="assets/skatelens-still.png" data-gif="assets/skatelens-demo.gif" data-still="assets/skatelens-still.png" width="816" height="446" alt="SkateLens replaying an ollie with a pose overlay, trick prediction, and device activity panel.">
+        <button class="demo-toggle" type="button" aria-controls="skatelens-demo" hidden>Play animation</button>
+      </dd>
       <dt><a href="https://github.com/danielsuhcompsci/nutrition">Nutrition Search</a></dt>
-      <dd>Food search with barcode scanning and nutrient charts.</dd>
-      <dt><a href="https://github.com/cnanlab/fmri-pipelines">fMRI pipelines</a></dt>
-      <dd>Python workflows for fMRI preprocessing at CNAN Lab.</dd>
-      <dt><a href="https://github.com/danielsuhcompsci/skateboard-tricks">Skateboard Trick Classifier</a></dt>
-      <dd>Video upload API and preview UI for a trick classifier.</dd>
+      <dd>Food search with barcode scanning and nutrient charts.
+        <img id="nutrition-demo" class="project-media" src="assets/nutrition-still.png" data-gif="assets/nutrition-demo.gif" data-still="assets/nutrition-still.png" width="816" height="444" alt="Nutrition Search demo moving from food search results to a food detail page, nutrient charts, and the barcode scanner screen.">
+        <button class="demo-toggle" type="button" aria-controls="nutrition-demo" hidden>Play animation</button>
+      </dd>
+      <dt><a href="https://github.com/cnanlab/fmri-pipelines">fMRI Pipelines</a></dt>
+      <dd>Python workflows for fMRI preprocessing at CNAN Lab.
+        <img class="project-media" src="assets/fmri-pipeline.png" width="1088" height="1016" alt="Hand-drawn fMRI workflow with two parallel run lanes. Each run branches into BET brain extraction and timing preparation, joins to generate the FSL configuration, runs FEAT, and writes results to the output folder.">
+      </dd>
     </dl>
   </main>
+  <script>
+    const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+    document.querySelectorAll('.demo-toggle').forEach(button => {
+      const image = document.getElementById(button.getAttribute('aria-controls'));
+      let playing = false;
+      function setPlaying(value) {
+        playing = value;
+        image.src = playing ? image.dataset.gif : image.dataset.still;
+        button.textContent = playing ? 'Pause animation' : 'Play animation';
+      }
+      button.hidden = false;
+      setPlaying(!reducedMotion.matches);
+      button.addEventListener('click', () => setPlaying(!playing));
+      reducedMotion.addEventListener('change', event => setPlaying(!event.matches));
+    });
+  </script>
 </body>
 </html>
